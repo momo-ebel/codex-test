@@ -2,18 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Star Catcher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Star Catcher + Morris Adventure</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="game-shell">
       <section class="hero">
-        <p class="eyebrow">Mini browser game</p>
-        <h1>Star Catcher</h1>
-        <p class="description">
-          Tap the glowing stars before they fade away. Survive 30 seconds and try to beat your high score.
+        <p class="eyebrow">Two mini browser games</p>
+        <h1>Arcade Duo</h1>
+        <p class="description" id="game-description">
+          Tap the glowing stars before they fade away, or switch to Morris Adventure for a side-scrolling run built for iPhone-sized screens.
         </p>
+      </section>
+
+      <section class="game-picker" aria-label="Choose a game">
+        <button class="game-tab is-active" type="button" data-game="star">Star Catcher</button>
+        <button class="game-tab" type="button" data-game="adventure">Morris Adventure</button>
       </section>
 
       <section class="status-panel" aria-label="Game status">
@@ -36,8 +41,30 @@
         <p id="message" class="message">Press start to begin the countdown.</p>
       </section>
 
-      <section class="arena-wrap">
-        <div id="arena" class="arena" aria-label="Game arena"></div>
+      <section id="star-panel" class="play-panel is-active" aria-label="Star Catcher panel">
+        <div class="arena-wrap">
+          <div id="arena" class="arena" aria-label="Game arena"></div>
+        </div>
+      </section>
+
+      <section id="adventure-panel" class="play-panel" aria-label="Morris Adventure panel">
+        <div class="adventure-card">
+          <div class="adventure-meta">
+            <div>
+              <span class="label">Goal</span>
+              <strong>Reach the studio door</strong>
+            </div>
+            <div>
+              <span class="label">Controls</span>
+              <strong>Tap jump or use space</strong>
+            </div>
+          </div>
+          <canvas id="adventure-canvas" class="adventure-canvas" width="390" height="560" aria-label="Morris Adventure game"></canvas>
+          <div class="touch-controls" aria-label="Touch controls">
+            <button id="jump-button" type="button" class="touch-button">Jump</button>
+            <button id="restart-button" type="button" class="touch-button touch-button--secondary">Restart level</button>
+          </div>
+        </div>
       </section>
     </main>
 

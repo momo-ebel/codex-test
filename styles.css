@@ -8,6 +8,8 @@
   --accent: #8b5cf6;
   --accent-2: #22d3ee;
   --good: #facc15;
+  --danger: #fb7185;
+  --success: #34d399;
 }
 
 * {
@@ -25,16 +27,42 @@ body {
     var(--bg);
 }
 
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.95rem 1.4rem;
+  font: inherit;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 14px 28px rgba(34, 211, 238, 0.2);
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+
+button:hover,
+button:focus-visible {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 18px 32px rgba(139, 92, 246, 0.28);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .game-shell {
-  width: min(920px, calc(100vw - 2rem));
+  width: min(920px, calc(100vw - 1rem));
   margin: 0 auto;
-  padding: 2rem 0 3rem;
+  padding: max(1rem, env(safe-area-inset-top)) 0 max(2rem, env(safe-area-inset-bottom));
 }
 
 .hero,
 .status-panel,
 .controls,
-.arena-wrap {
+.arena-wrap,
+.game-picker,
+.adventure-card {
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 24px;
@@ -43,7 +71,7 @@ body {
 }
 
 .hero {
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .eyebrow,
@@ -54,14 +82,31 @@ body {
 
 .hero h1 {
   margin: 0.25rem 0 0.75rem;
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: clamp(2rem, 7vw, 4rem);
 }
 
 .description {
   margin: 0;
   max-width: 48rem;
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1.6;
+}
+
+.game-picker {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+}
+
+.game-tab {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+.game-tab.is-active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 
 .status-panel {
@@ -72,14 +117,16 @@ body {
   padding: 1.25rem 1.5rem;
 }
 
-.status-panel div {
+.status-panel div,
+.adventure-meta div {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-.status-panel strong {
-  font-size: 2rem;
+.status-panel strong,
+.adventure-meta strong {
+  font-size: 1.65rem;
 }
 
 .controls {
@@ -91,26 +138,16 @@ body {
   padding: 1rem 1.5rem;
 }
 
-button {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.95rem 1.4rem;
-  font: inherit;
-  font-weight: 700;
-  color: white;
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 14px 28px rgba(34, 211, 238, 0.2);
-  transition: transform 140ms ease, box-shadow 140ms ease;
+.play-panel {
+  display: none;
 }
 
-button:hover,
-button:focus-visible {
-  transform: translateY(-1px) scale(1.01);
-  box-shadow: 0 18px 32px rgba(139, 92, 246, 0.28);
+.play-panel.is-active {
+  display: block;
 }
 
-.arena-wrap {
+.arena-wrap,
+.adventure-card {
   margin-top: 1rem;
   padding: 1rem;
 }
@@ -150,9 +187,41 @@ button:focus-visible {
   text-shadow: 0 0 12px rgba(250, 204, 21, 0.8), 0 0 30px rgba(250, 204, 21, 0.4);
 }
 
-.star:hover,
-.star:focus-visible {
-  transform: scale(1.08);
+.adventure-card {
+  padding: 1rem;
+}
+
+.adventure-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.adventure-canvas {
+  display: block;
+  width: 100%;
+  max-width: 390px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #66d9ff 0%, #9ce6ff 45%, #e0f2fe 46%, #84cc16 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.touch-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.touch-button--secondary {
+  background: linear-gradient(135deg, #1e293b, #334155);
+}
+
+.message {
+  margin: 0;
 }
 
 @keyframes pulse {
@@ -165,16 +234,33 @@ button:focus-visible {
 }
 
 @media (max-width: 680px) {
-  .controls {
+  .controls,
+  .status-panel,
+  .adventure-meta,
+  .touch-controls {
+    grid-template-columns: 1fr;
     flex-direction: column;
     align-items: stretch;
   }
 
-  .status-panel {
-    grid-template-columns: 1fr;
+  .controls {
+    display: flex;
+  }
+
+  .status-panel strong,
+  .adventure-meta strong {
+    font-size: 1.35rem;
   }
 
   .arena {
     min-height: 380px;
+  }
+
+  .game-shell {
+    width: min(100vw - 0.75rem, 460px);
+  }
+
+  button {
+    min-height: 52px;
   }
 }
