@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Star Catcher</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="hero">
+        <p class="eyebrow">Mini browser game</p>
+        <h1>Star Catcher</h1>
+        <p class="description">
+          Tap the glowing stars before they fade away. Survive 30 seconds and try to beat your high score.
+        </p>
+      </section>
+
+      <section class="status-panel" aria-label="Game status">
+        <div>
+          <span class="label">Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <span class="label">Time</span>
+          <strong id="time">30</strong>
+        </div>
+        <div>
+          <span class="label">Best</span>
+          <strong id="best">0</strong>
+        </div>
+      </section>
+
+      <section class="controls">
+        <button id="start-button" type="button">Start game</button>
+        <p id="message" class="message">Press start to begin the countdown.</p>
+      </section>
+
+      <section class="arena-wrap">
+        <div id="arena" class="arena" aria-label="Game arena"></div>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
