@@ -1,6 +1,9 @@
-# Star Catcher
+# Arcade Duo
 
-A tiny browser game where you click glowing stars before they disappear. The game lasts 30 seconds, tracks your current score, and saves your best score in local storage.
+A tiny static browser arcade with two touch-friendly games:
+
+- **Star Catcher** — tap glowing stars before they disappear in a 30-second sprint.
+- **Morris Adventure** — a compact side-scrolling platformer designed for iPhone-sized screens, where Morris jumps over spikes, avoids paint-spirit enemies, and races for the studio door.
 
 ## Run locally
 
