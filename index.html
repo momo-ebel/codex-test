@@ -1,72 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Star Catcher + Morris Adventure</title>
+    <meta name="theme-color" content="#0f3d2e" />
+    <title>Felix Grüner Daumen</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="game-shell">
-      <section class="hero">
-        <p class="eyebrow">Two mini browser games</p>
-        <h1>Arcade Duo</h1>
-        <p class="description" id="game-description">
-          Tap the glowing stars before they fade away, or switch to Morris Adventure for a side-scrolling run built for iPhone-sized screens.
-        </p>
-      </section>
-
-      <section class="game-picker" aria-label="Choose a game">
-        <button class="game-tab is-active" type="button" data-game="star">Star Catcher</button>
-        <button class="game-tab" type="button" data-game="adventure">Morris Adventure</button>
-      </section>
-
-      <section class="status-panel" aria-label="Game status">
-        <div>
-          <span class="label">Score</span>
-          <strong id="score">0</strong>
-        </div>
-        <div>
-          <span class="label">Time</span>
-          <strong id="time">30</strong>
-        </div>
-        <div>
-          <span class="label">Best</span>
-          <strong id="best">0</strong>
-        </div>
-      </section>
-
-      <section class="controls">
-        <button id="start-button" type="button">Start game</button>
-        <p id="message" class="message">Press start to begin the countdown.</p>
-      </section>
-
-      <section id="star-panel" class="play-panel is-active" aria-label="Star Catcher panel">
-        <div class="arena-wrap">
-          <div id="arena" class="arena" aria-label="Game arena"></div>
-        </div>
-      </section>
-
-      <section id="adventure-panel" class="play-panel" aria-label="Morris Adventure panel">
-        <div class="adventure-card">
-          <div class="adventure-meta">
-            <div>
-              <span class="label">Goal</span>
-              <strong>Reach the studio door</strong>
-            </div>
-            <div>
-              <span class="label">Controls</span>
-              <strong>Tap jump or use space</strong>
-            </div>
-          </div>
-          <canvas id="adventure-canvas" class="adventure-canvas" width="390" height="560" aria-label="Morris Adventure game"></canvas>
-          <div class="touch-controls" aria-label="Touch controls">
-            <button id="jump-button" type="button" class="touch-button">Jump</button>
-            <button id="restart-button" type="button" class="touch-button touch-button--secondary">Restart level</button>
+    <main class="app-shell">
+      <section class="hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow">Pflanzen erkennen, verstehen & begleiten</p>
+          <h1>Felix Grüner Daumen</h1>
+          <p class="hero-text">
+            Eine iPhone-optimierte Web App, mit der du Pflanzenfotos analysierst, Probleme früh erkennst
+            und deine eigenen Pflanzen als lebendiges Tagebuch dokumentierst.
+          </p>
+          <div class="hero-badges">
+            <span>Foto-Upload</span>
+            <span>Pflanzen-Check</span>
+            <span>Pflegeverlauf</span>
           </div>
         </div>
+        <div class="phone-preview" aria-hidden="true">
+          <div class="phone-preview__screen">
+            <div class="mini-leaf"></div>
+            <p>Heute prüfen</p>
+            <strong>Monstera Deliciosa</strong>
+            <span>Leichter Trockenstress · Gutes Wachstum</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel panel--analysis">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">1. Analyse</p>
+              <h2>Foto hochladen & Pflanze prüfen</h2>
+            </div>
+            <span class="status-pill">Sofortanalyse</span>
+          </div>
+
+          <form id="analysis-form" class="stack">
+            <label class="upload-dropzone" for="analysis-photo">
+              <input id="analysis-photo" name="analysis-photo" type="file" accept="image/*" />
+              <span class="upload-dropzone__title">Pflanzenfoto auswählen</span>
+              <span class="upload-dropzone__hint">Ideal für iPhone-Fotos aus Kamera oder Galerie.</span>
+            </label>
+
+            <div class="form-grid">
+              <label>
+                <span>Pflanzentyp</span>
+                <select id="plant-type">
+                  <option value="zimmerpflanze">Zimmerpflanze</option>
+                  <option value="sukkulente">Sukkulente</option>
+                  <option value="kraut">Kräuterpflanze</option>
+                  <option value="orchidee">Orchidee</option>
+                  <option value="gemuese">Gemüsepflanze</option>
+                </select>
+              </label>
+              <label>
+                <span>Symptom</span>
+                <select id="plant-symptom">
+                  <option value="none">Kein offensichtliches Problem</option>
+                  <option value="yellow">Gelbe Blätter</option>
+                  <option value="dry">Trockene / braune Stellen</option>
+                  <option value="droopy">Hängende Blätter</option>
+                  <option value="spots">Flecken / Schädlingsverdacht</option>
+                </select>
+              </label>
+            </div>
+
+            <button type="submit">Pflanze analysieren</button>
+          </form>
+
+          <div id="analysis-empty" class="empty-state">
+            Lade ein Bild hoch, damit Felix eine Pflanzenart, aktuelle Auffälligkeiten und passende Pflegeschritte vorschlagen kann.
+          </div>
+
+          <div id="analysis-result" class="analysis-result hidden" aria-live="polite">
+            <div class="analysis-result__media">
+              <img id="analysis-preview" alt="Vorschau des hochgeladenen Pflanzenfotos" />
+            </div>
+            <div class="analysis-result__content stack-sm">
+              <div>
+                <p class="eyebrow">Erkennung</p>
+                <h3 id="result-name">–</h3>
+                <p id="result-confidence" class="muted"></p>
+              </div>
+              <div class="chips" id="result-tags"></div>
+              <div class="insight-card">
+                <span>Aktuelle Einschätzung</span>
+                <strong id="result-problem"></strong>
+                <p id="result-help"></p>
+              </div>
+              <div class="care-list">
+                <h4>Nächste Schritte</h4>
+                <ul id="result-actions"></ul>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel panel--collection">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">2. Sammlung</p>
+              <h2>Eigene Pflanzen speichern</h2>
+            </div>
+            <span class="status-pill status-pill--soft">Lokal gesichert</span>
+          </div>
+
+          <form id="plant-form" class="stack">
+            <div class="form-grid">
+              <label>
+                <span>Name deiner Pflanze</span>
+                <input id="plant-name" type="text" placeholder="z. B. Wohnzimmer-Monstera" required />
+              </label>
+              <label>
+                <span>Pflanzenart</span>
+                <input id="plant-species" type="text" placeholder="z. B. Monstera Deliciosa" required />
+              </label>
+            </div>
+            <label>
+              <span>Pflegenotiz</span>
+              <textarea id="plant-note" rows="3" placeholder="Neues Blatt, umgetopft, sonniger gestellt …"></textarea>
+            </label>
+            <label class="upload-dropzone upload-dropzone--compact" for="plant-photo">
+              <input id="plant-photo" type="file" accept="image/*" />
+              <span class="upload-dropzone__title">Verlaufsfoto hinzufügen</span>
+              <span class="upload-dropzone__hint">Optional, wird zusammen mit Datum und Notiz gespeichert.</span>
+            </label>
+            <button type="submit">Zu meinen Pflanzen hinzufügen</button>
+          </form>
+
+          <div id="plants-empty" class="empty-state">
+            Du hast noch keine eigenen Pflanzen gespeichert. Lege jetzt deine erste Pflanze an.
+          </div>
+          <div id="plants-list" class="plants-list"></div>
+        </article>
       </section>
     </main>
+
+    <template id="plant-card-template">
+      <article class="plant-card">
+        <div class="plant-card__header">
+          <div>
+            <p class="eyebrow plant-card__species"></p>
+            <h3 class="plant-card__name"></h3>
+          </div>
+          <span class="plant-card__trend"></span>
+        </div>
+        <div class="plant-card__summary"></div>
+        <div class="timeline"></div>
+      </article>
+    </template>
 
     <script src="game.js"></script>
   </body>
