@@ -1,16 +1,21 @@
-# Arcade Duo
+# Felix Grüner Daumen
 
-A tiny static browser arcade with two touch-friendly games:
+Eine moderne, iPhone-optimierte Web App für Pflanzenidentifikation, Problemerkennung und Pflegedokumentation.
 
-- **Star Catcher** — tap glowing stars before they disappear in a 30-second sprint.
-- **Morris Adventure** — a compact side-scrolling platformer designed for iPhone-sized screens, where Morris jumps over spikes, avoids paint-spirit enemies, and races for the studio door.
+## Funktionen
 
-## Run locally
+- **Fotoanalyse:** Pflanze per Bild hochladen und eine simulierte Soforteinschätzung zu Art, Gesundheitszustand und Hilfestellung erhalten.
+- **Pflegeempfehlungen:** Konkrete nächste Schritte für häufige Probleme wie gelbe Blätter, Trockenstress oder Flecken.
+- **Eigene Pflanzen:** Lieblingspflanzen lokal im Browser speichern.
+- **Verlauf mit Fotos:** Für jede Pflanze können neue Updates mit Notizen und Fotos ergänzt werden, um die Entwicklung über die Zeit sichtbar zu machen.
+- **Mobile Fokus:** Layout, Abstände und Interaktionen sind auf iPhone-Bildschirme optimiert.
 
-Because this is a static site, you can open `index.html` directly in a browser or serve it with a lightweight web server:
+## Lokal starten
+
+Da es sich um eine statische Web App handelt, reicht ein einfacher lokaler Webserver:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then visit <http://localhost:8000>.
+Danach im Browser `http://localhost:8000` öffnen.
