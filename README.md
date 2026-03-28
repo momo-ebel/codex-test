@@ -23,6 +23,16 @@ python3 -m http.server 8000
 
 Danach im Browser `http://localhost:8000` öffnen.
 
-## API-Key ergänzen
+## API-Key ergänzen (GitHub Pages kompatibel)
 
-Der Gemini-Key ist derzeit bewusst leer gelassen. Zum Aktivieren die Konstante `GEMINI_API_KEY` in `game.js` setzen.
+Für statisches Hosting (z. B. GitHub Pages) kann der Gemini-Key direkt in der UI im Feld **"Gemini API Key"** hinterlegt werden.
+Der Key wird nur lokal im Browser (`localStorage`) gespeichert.
+
+> Wichtig: Ein API-Key im Browser ist immer ein Sicherheitsrisiko, weil Client-Code öffentlich ist.
+> Für Produktion wird ein Server/Proxy empfohlen, der den Schlüssel geheim hält.
+
+## GitHub Pages Hinweise
+
+- Die PWA-`start_url` und Service-Worker-Cachepfade sind auf relative Pfade gestellt, damit Projektseiten unter `https://<user>.github.io/<repo>/` korrekt funktionieren.
+- Offline-Shell und lokale Datenhaltung (`localStorage`) funktionieren auf GitHub Pages.
+- Echte Push-Reminder und sicherer KI-Zugriff benötigen zusätzliche Backend-/Push-Infrastruktur.
