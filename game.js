@@ -9,6 +9,7 @@ const analysisPreview = document.getElementById('analysis-preview');
 const resultName = document.getElementById('result-name');
 const resultConfidence = document.getElementById('result-confidence');
 const resultConfidenceTier = document.getElementById('result-confidence-tier');
+const resultAiNote = document.getElementById('result-ai-note');
 const resultProblem = document.getElementById('result-problem');
 const resultHelp = document.getElementById('result-help');
 const resultActions = document.getElementById('result-actions');
@@ -153,11 +154,6 @@ function getConfidenceTier(score) {
   return 'Niedrig';
 }
 
-function pseudoConfidence(name, symptom, qualityPenalty) {
-  const base = name.length * 7 + symptom.length * 3;
-  return clamp(92 - (base % 18) - qualityPenalty, 61, 97);
-}
-
 async function assessImageQuality(file) {
   if (!file) return { warnings: [], penalty: 0 };
   const imageUrl = await readFileAsDataUrl(file);
@@ -262,25 +258,25 @@ async function analyzeWithGemini(imageBase64, type, symptom) {
 
 function analyzePlantFallback(type, symptom, qualityPenalty) {
   const catalog = plantCatalog[type] || plantCatalog.zimmerpflanze;
-  const index = symptom.length % catalog.names.length;
-  const name = catalog.names[index];
   const symptomInfo = symptomMap[symptom] || symptomMap.none;
-  const confidenceScore = pseudoConfidence(name, symptom, qualityPenalty);
-  const tier = getConfidenceTier(confidenceScore);
+  const confidenceScore = clamp(54 - qualityPenalty, 25, 60);
+  const tier = 'Niedrig';
 
-  const followUps = tier === 'Niedrig'
-    ? ['Nahaufnahme eines betroffenen Blatts hochladen.', 'Gesamtansicht inkl. Topf und Erde zeigen.', 'Foto bei natürlichem Licht ohne Blitz aufnehmen.']
-    : [];
+  const followUps = [
+    'Nahaufnahme eines betroffenen Blatts hochladen.',
+    'Gesamtansicht inkl. Topf und Erde zeigen.',
+    'Foto bei natürlichem Licht ohne Blitz aufnehmen.',
+  ];
 
   return {
-    name,
+    name: 'Keine verlässliche Artbestimmung möglich',
     confidenceScore,
     confidence: `${confidenceScore}% Übereinstimmung`,
     confidenceTier: tier,
     problem: symptomInfo.title,
     help: symptomInfo.help,
     actions: symptomInfo.actions,
-    tags: [...catalog.tags, symptomInfo.trend],
+    tags: [...catalog.tags, symptomInfo.trend, 'Art unbestätigt'],
     followUps,
     source: 'fallback',
   };
@@ -291,6 +287,11 @@ function renderAnalysis(result, imageSrc, symptom) {
   resultName.textContent = result.name;
   resultConfidence.textContent = `${result.confidenceScore}% Übereinstimmung`;
   resultConfidenceTier.textContent = `Konfidenz: ${result.confidenceTier || getConfidenceTier(result.confidenceScore)}`;
+  if (result.source === 'gemini') {
+    resultAiNote.textContent = 'KI-Erkennung aktiv: Die Analyse wurde mit Gemini durchgeführt.';
+  } else {
+    resultAiNote.textContent = 'Hinweis: KI-Erkennung war nicht verfügbar oder fehlgeschlagen. Pflanzenart wurde nicht geraten.';
+  }
   resultProblem.textContent = result.problem;
   resultHelp.textContent = result.help;
   resultActions.innerHTML = result.actions.map((action) => `<li>${action}</li>`).join('');
