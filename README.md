@@ -4,11 +4,14 @@ Eine moderne, iPhone-optimierte Web App für Pflanzenidentifikation, Problemerke
 
 ## Funktionen
 
-- **Fotoanalyse:** Pflanze per Bild hochladen und eine simulierte Soforteinschätzung zu Art, Gesundheitszustand und Hilfestellung erhalten.
-- **Pflegeempfehlungen:** Konkrete nächste Schritte für häufige Probleme wie gelbe Blätter, Trockenstress oder Flecken.
-- **Eigene Pflanzen:** Lieblingspflanzen lokal im Browser speichern.
-- **Verlauf mit Fotos:** Für jede Pflanze können neue Updates mit Notizen und Fotos ergänzt werden, um die Entwicklung über die Zeit sichtbar zu machen.
-- **Mobile Fokus:** Layout, Abstände und Interaktionen sind auf iPhone-Bildschirme optimiert.
+- **KI-Analyse mit Fallback:** Bildanalyse mit vorbereitetem Gemini-Client und lokalem Fallback (API-Key aktuell absichtlich leer).
+- **Konfidenz-UX:** Ergebnis mit Hoch/Mittel/Niedrig-Konfidenz inkl. Follow-up-Fragen bei unsicheren Analysen.
+- **Bildqualitäts-Checks:** Warnungen bei dunklen, überbelichteten oder kontrastarmen Bildern.
+- **Behandlungsbibliothek:** Symptom-spezifische Schritte inkl. Sicherheits- und Eskalationshinweisen.
+- **Erweiterte Pflanzenprofile:** Standort, Lichtziel, Topfgröße, Bewässerungsintervall, Zeitstempel und Verlaufseinträge.
+- **Pflegeplan & Erinnerungen:** Fällige Aufgaben (Gießen, Schädlingscheck, Drehen) aus Pflegezielen + Verlauf abgeleitet.
+- **Trendmetriken:** Vitalitäts- und Dokumentationsmetriken pro Pflanze.
+- **PWA-Basics:** App-Manifest, Service Worker und Offline-Shell.
 
 ## Lokal starten
 
@@ -20,6 +23,6 @@ python3 -m http.server 8000
 
 Danach im Browser `http://localhost:8000` öffnen.
 
-## Produkt-Roadmap
+## API-Key ergänzen
 
-- Siehe `PRODUCT_ROADMAP.md` für 10 konkrete Empfehlungen, um die App von Mockup zu nutzbarer Produktversion weiterzuentwickeln.
+Der Gemini-Key ist derzeit bewusst leer gelassen. Zum Aktivieren die Konstante `GEMINI_API_KEY` in `game.js` setzen.
