@@ -4,6 +4,7 @@ const plantTypeInput = document.getElementById('plant-type');
 const plantSymptomInput = document.getElementById('plant-symptom');
 const qualityWarnings = document.getElementById('quality-warnings');
 const analysisEmpty = document.getElementById('analysis-empty');
+const analysisErrors = document.getElementById('analysis-errors');
 const analysisResult = document.getElementById('analysis-result');
 const analysisPreview = document.getElementById('analysis-preview');
 const resultName = document.getElementById('result-name');
@@ -208,51 +209,102 @@ async function assessImageQuality(file) {
 }
 
 async function analyzeWithGemini(imageBase64, type, symptom) {
-  if (!GEMINI_API_KEY) return null;
+  if (!GEMINI_API_KEY) {
+    return {
+      result: null,
+      error: 'Kein Gemini API-Key hinterlegt. Live-KI ist deaktiviert.',
+    };
+  }
 
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
   const prompt = `Bestimme Pflanzenart, Problem und 3 sichere nächste Schritte als JSON mit Schlüsseln name, confidenceScore (0-100), problem, help, actions (array), tags (array), followUps (array). Typ:${type}, Symptom:${symptom}.`;
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: prompt },
-            {
-              inline_data: {
-                mime_type: 'image/jpeg',
-                data: imageBase64,
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: prompt },
+              {
+                inline_data: {
+                  mime_type: 'image/jpeg',
+                  data: imageBase64,
+                },
               },
-            },
-          ],
-        },
-      ],
-      generationConfig: { responseMimeType: 'application/json' },
-    }),
-  });
+            ],
+          },
+        ],
+        generationConfig: { responseMimeType: 'application/json' },
+      }),
+    });
+  } catch {
+    return {
+      result: null,
+      error: 'Netzwerkfehler beim Aufruf von Gemini. Bitte Verbindung prüfen und erneut versuchen.',
+    };
+  }
 
-  if (!response.ok) return null;
+  if (!response.ok) {
+    let details = '';
+    try {
+      const err = await response.json();
+      details = err?.error?.message || '';
+    } catch {
+      // ignore json parsing
+    }
+
+    return {
+      result: null,
+      error: details
+        ? `Gemini-Fehler (${response.status}): ${details}`
+        : `Gemini-Fehler (${response.status}). Prüfe API-Key, Modell-Freigabe und Referrer-Regeln.`,
+    };
+  }
+
   const data = await response.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) return null;
+  if (!text) {
+    return {
+      result: null,
+      error: 'Gemini hat keine auswertbare Antwort zurückgegeben.',
+    };
+  }
 
   try {
-    const parsed = JSON.parse(text);
+    const normalized = text.replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
+    const parsed = JSON.parse(normalized);
+    const name = (parsed.name || '').toString().trim();
+    const confidenceScore = clamp(Number(parsed.confidenceScore || 0), 0, 100);
+
+    if (!name || confidenceScore < 1) {
+      return {
+        result: null,
+        error: 'Gemini-Antwort war unvollständig. Keine verlässliche Artbestimmung möglich.',
+      };
+    }
+
     return {
-      name: parsed.name,
-      confidenceScore: clamp(Number(parsed.confidenceScore || 0), 0, 100),
-      problem: parsed.problem,
-      help: parsed.help,
-      actions: Array.isArray(parsed.actions) ? parsed.actions.slice(0, 4) : [],
-      tags: Array.isArray(parsed.tags) ? parsed.tags.slice(0, 5) : [],
-      followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 4) : [],
-      source: 'gemini',
+      result: {
+        name,
+        confidenceScore,
+        problem: parsed.problem,
+        help: parsed.help,
+        actions: Array.isArray(parsed.actions) ? parsed.actions.slice(0, 4) : [],
+        tags: Array.isArray(parsed.tags) ? parsed.tags.slice(0, 5) : [],
+        followUps: Array.isArray(parsed.followUps) ? parsed.followUps.slice(0, 4) : [],
+        source: 'gemini',
+      },
+      error: '',
     };
   } catch {
-    return null;
+    return {
+      result: null,
+      error: 'Gemini-Antwort konnte nicht als JSON gelesen werden.',
+    };
   }
 }
 
@@ -269,7 +321,7 @@ function analyzePlantFallback(type, symptom, qualityPenalty) {
   ];
 
   return {
-    name: 'Keine verlässliche Artbestimmung möglich',
+    name: 'Unbekannt (keine verlässliche Artbestimmung)',
     confidenceScore,
     confidence: `${confidenceScore}% Übereinstimmung`,
     confidenceTier: tier,
@@ -280,6 +332,17 @@ function analyzePlantFallback(type, symptom, qualityPenalty) {
     followUps,
     source: 'fallback',
   };
+}
+
+function renderAnalysisError(message) {
+  if (!message) {
+    analysisErrors.classList.add('hidden');
+    analysisErrors.textContent = '';
+    return;
+  }
+
+  analysisErrors.classList.remove('hidden');
+  analysisErrors.textContent = message;
 }
 
 function renderAnalysis(result, imageSrc, symptom) {
@@ -487,13 +550,16 @@ analysisForm.addEventListener('submit', async (event) => {
   const imageSrc = await readFileAsDataUrl(file);
   const base64Payload = imageSrc.split(',')[1] || '';
   const quality = await assessImageQuality(file);
-  let result = await analyzeWithGemini(base64Payload, plantTypeInput.value, plantSymptomInput.value);
+  const aiOutcome = await analyzeWithGemini(base64Payload, plantTypeInput.value, plantSymptomInput.value);
+  let result = aiOutcome.result;
 
   if (!result) {
     result = analyzePlantFallback(plantTypeInput.value, plantSymptomInput.value, quality.penalty);
+    renderAnalysisError(aiOutcome.error || 'Live-KI nicht verfügbar. Ergebnis basiert nur auf Symptom-Logik und ist keine Artbestimmung.');
   } else {
     result.confidenceTier = getConfidenceTier(result.confidenceScore);
     result.confidence = `${result.confidenceScore}% Übereinstimmung`;
+    renderAnalysisError('');
   }
 
   renderAnalysis(result, imageSrc, plantSymptomInput.value);
