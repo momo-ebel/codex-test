@@ -558,14 +558,6 @@ plantForm.addEventListener('submit', async (event) => {
   renderTasks();
 });
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').catch(() => {
-      // ignore sw registration errors
-    });
-  });
-}
-
 initializeGeminiKeyInput();
 renderPlants();
 renderTasks();

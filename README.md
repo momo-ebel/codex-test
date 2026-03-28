@@ -9,9 +9,9 @@ Eine moderne, iPhone-optimierte Web App für Pflanzenidentifikation, Problemerke
 - **Bildqualitäts-Checks:** Warnungen bei dunklen, überbelichteten oder kontrastarmen Bildern.
 - **Behandlungsbibliothek:** Symptom-spezifische Schritte inkl. Sicherheits- und Eskalationshinweisen.
 - **Erweiterte Pflanzenprofile:** Standort, Lichtziel, Topfgröße, Bewässerungsintervall, Zeitstempel und Verlaufseinträge.
-- **Pflegeplan & Erinnerungen:** Fällige Aufgaben (Gießen, Schädlingscheck, Drehen) aus Pflegezielen + Verlauf abgeleitet.
+- **Pflegeplan & Aufgabenliste:** Fällige Aufgaben (Gießen, Schädlingscheck, Drehen) aus Pflegezielen + Verlauf abgeleitet.
 - **Trendmetriken:** Vitalitäts- und Dokumentationsmetriken pro Pflanze.
-- **PWA-Basics:** App-Manifest, Service Worker und Offline-Shell.
+- **Lokale Datenspeicherung:** Pflanzenprofile und Verlauf bleiben im Browser (`localStorage`).
 
 ## Lokal starten
 
@@ -33,6 +33,6 @@ Der Key wird nur lokal im Browser (`localStorage`) gespeichert.
 
 ## GitHub Pages Hinweise
 
-- Die PWA-`start_url` und Service-Worker-Cachepfade sind auf relative Pfade gestellt, damit Projektseiten unter `https://<user>.github.io/<repo>/` korrekt funktionieren.
-- Offline-Shell und lokale Datenhaltung (`localStorage`) funktionieren auf GitHub Pages.
-- Echte Push-Reminder und sicherer KI-Zugriff benötigen zusätzliche Backend-/Push-Infrastruktur.
+- Die Anwendung läuft vollständig statisch auf GitHub Pages.
+- Daten werden lokal im Browser (`localStorage`) gespeichert.
+- Sicherer KI-Zugriff benötigt weiterhin einen Backend-Proxy statt eines geheimen Keys im Frontend.
