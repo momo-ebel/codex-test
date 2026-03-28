@@ -3,7 +3,7 @@
 Stand: 2026-03-28
 
 ## Kurzfazit
-Nicht alle aktuell beworbenen Features sind auf GitHub Pages in der bisherigen Form zuverlässig nutzbar. Die wichtigsten Blocker sind sichere Gemini-Integration, PWA-Details und die Formulierung "Reminders".
+Nicht alle ursprünglich beworbenen Features waren auf GitHub Pages in der bisherigen Form zuverlässig nutzbar. Der Scope wurde daher auf stabile Funktionen reduziert (keine Offline-Shell, keine Notification-Features).
 
 ## Feature-Check gegen Website-/README-Claims
 
@@ -15,9 +15,9 @@ Nicht alle aktuell beworbenen Features sind auf GitHub Pages in der bisherigen F
 | Behandlungsbibliothek | ✅ | Lokale Datenstruktur, keine Server-Abhängigkeit. | Keine Blocker. |
 | Pflanzenprofile + Verlauf | ✅ | localStorage-basiert, daher browser-/gerätegebunden. | Claim um "lokal auf diesem Gerät" ergänzen. |
 | Pflegeplan | ✅ | Aufgabe wird lokal aus Einträgen berechnet. | Claim als "lokaler Plan" präzisieren. |
-| Reminders | ❌ (für echte Benachrichtigungen) | Es gibt nur eine fällige Aufgabenliste, aber keine Push-/System-Erinnerungen. | Claim ändern auf "Aufgabenliste" oder Web-Push + Notification-Flow implementieren. |
+| Reminders | ❌ (entfernt) | Es gibt keine Push-/System-Erinnerungen. | Feature aus Scope entfernt; stattdessen Aufgabenliste. |
 | Trendmetriken | ✅ | Lokal berechnet, sichtbar in den Karten. | Keine Blocker. |
-| PWA/Offline-fähig | ⚠️ Teilweise | Vorher waren Root-Pfade potenziell problematisch für Projektseiten unter `/repo/`. | Relative Pfade nutzen (aktualisiert), zusätzlich Icons ergänzen. |
+| PWA/Offline-fähig | ❌ (entfernt) | Offline-Shell wurde aus dem Scope genommen. | Keine PWA-/Offline-Claims mehr kommunizieren. |
 
 ## Konkrete Issues (GitHub Pages)
 
