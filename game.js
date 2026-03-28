@@ -35,9 +35,11 @@ const plantCardTemplate = document.getElementById('plant-card-template');
 
 const tasksEmpty = document.getElementById('tasks-empty');
 const tasksList = document.getElementById('tasks-list');
+const geminiApiKeyInput = document.getElementById('gemini-api-key');
 
 const storageKey = 'felix-gruener-daumen-plants-v2';
-const GEMINI_API_KEY = '';
+const geminiKeyStorageKey = 'felix-gruener-daumen-gemini-key';
+let GEMINI_API_KEY = '';
 
 const plantCatalog = {
   zimmerpflanze: {
@@ -316,6 +318,32 @@ function loadPlants() {
   }
 }
 
+function readGeminiKey() {
+  try {
+    return (localStorage.getItem(geminiKeyStorageKey) || '').trim();
+  } catch {
+    return '';
+  }
+}
+
+function saveGeminiKey(value) {
+  try {
+    localStorage.setItem(geminiKeyStorageKey, value.trim());
+  } catch {
+    // ignore storage write errors
+  }
+}
+
+function initializeGeminiKeyInput() {
+  GEMINI_API_KEY = readGeminiKey();
+  if (!geminiApiKeyInput) return;
+  geminiApiKeyInput.value = GEMINI_API_KEY;
+  geminiApiKeyInput.addEventListener('change', () => {
+    GEMINI_API_KEY = geminiApiKeyInput.value.trim();
+    saveGeminiKey(GEMINI_API_KEY);
+  });
+}
+
 function savePlants(plants) {
   localStorage.setItem(storageKey, JSON.stringify(plants));
 }
@@ -532,11 +560,12 @@ plantForm.addEventListener('submit', async (event) => {
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(() => {
+    navigator.serviceWorker.register('./service-worker.js').catch(() => {
       // ignore sw registration errors
     });
   });
 }
 
+initializeGeminiKeyInput();
 renderPlants();
 renderTasks();
