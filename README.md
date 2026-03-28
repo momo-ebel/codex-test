@@ -19,3 +19,7 @@ python3 -m http.server 8000
 ```
 
 Danach im Browser `http://localhost:8000` öffnen.
+
+## Produkt-Roadmap
+
+- Siehe `PRODUCT_ROADMAP.md` für 10 konkrete Empfehlungen, um die App von Mockup zu nutzbarer Produktversion weiterzuentwickeln.
