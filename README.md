@@ -4,8 +4,9 @@ Eine moderne, iPhone-optimierte Web App für Pflanzenidentifikation, Problemerke
 
 ## Funktionen
 
-- **KI-Analyse mit Fallback:** Bildanalyse mit vorbereitetem Gemini-Client und lokalem Fallback (API-Key aktuell absichtlich leer).
+- **KI-Analyse mit Fallback:** Echte Gemini-Bildanalyse bei gesetztem API-Key, inklusive klarer Fehlermeldung bei Netzwerk-/Key-/API-Problemen.
 - **Konfidenz-UX:** Ergebnis mit Hoch/Mittel/Niedrig-Konfidenz inkl. Follow-up-Fragen bei unsicheren Analysen.
+- **Keine Fake-Claims:** Ohne erfolgreiche KI wird keine Pflanzenart erfunden; es wird transparent als „unbekannt“ markiert.
 - **Bildqualitäts-Checks:** Warnungen bei dunklen, überbelichteten oder kontrastarmen Bildern.
 - **Behandlungsbibliothek:** Symptom-spezifische Schritte inkl. Sicherheits- und Eskalationshinweisen.
 - **Erweiterte Pflanzenprofile:** Standort, Lichtziel, Topfgröße, Bewässerungsintervall, Zeitstempel und Verlaufseinträge.
@@ -30,6 +31,13 @@ Der Key wird nur lokal im Browser (`localStorage`) gespeichert.
 
 > Wichtig: Ein API-Key im Browser ist immer ein Sicherheitsrisiko, weil Client-Code öffentlich ist.
 > Für Produktion wird ein Server/Proxy empfohlen, der den Schlüssel geheim hält.
+
+Wenn du bei GitHub Pages trotz Key eine Fehlermeldung siehst, prüfe in Google AI Studio/Cloud:
+
+1. **Generative Language API aktiviert** (Projekt mit aktivierter Rechnungs-/Nutzungskonfiguration).
+2. **Key-Beschränkung erlaubt deine Domain**, z. B. `https://<username>.github.io/*`.
+3. **API-Beschränkung enthält Generative Language API**.
+4. **Modellzugriff für den verwendeten Modellnamen** ist freigeschaltet.
 
 ## GitHub Pages Hinweise
 
